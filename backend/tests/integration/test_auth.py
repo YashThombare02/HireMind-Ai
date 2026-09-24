@@ -29,6 +29,18 @@ async def test_register_then_login_then_get_me(client: AsyncClient, unique_email
     assert me_resp.json()["email"] == unique_email
 
 
+async def test_login_is_case_insensitive_on_email(client: AsyncClient, unique_email: str):
+    await _register(client, unique_email)
+    resp = await _login(client, unique_email.upper())
+    assert resp.status_code == 200, resp.text
+
+
+async def test_register_duplicate_email_is_also_case_insensitive(client: AsyncClient, unique_email: str):
+    await _register(client, unique_email)
+    resp = await _register(client, unique_email.upper())
+    assert resp.status_code == 400
+
+
 async def test_register_duplicate_email_returns_400(client: AsyncClient, unique_email: str):
     first = await _register(client, unique_email)
     assert first.status_code == 201

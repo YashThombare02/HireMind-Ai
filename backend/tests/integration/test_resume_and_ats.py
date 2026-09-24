@@ -102,6 +102,18 @@ async def test_resume_upload_rejects_non_pdf(client: AsyncClient, unique_email: 
     assert resp.status_code == 400
 
 
+async def test_resume_upload_rejects_oversized_file(client: AsyncClient, unique_email: str):
+    headers = await _signed_up_headers(client, unique_email)
+    oversized = b"%PDF-1.4\n" + b"0" * (6 * 1024 * 1024)  # 6MB > the 5MB limit
+    resp = await client.post(
+        "/resumes/upload",
+        files={"file": ("resume.pdf", oversized, "application/pdf")},
+        headers=headers,
+    )
+    assert resp.status_code == 400
+    assert "size limit" in resp.json()["detail"].lower()
+
+
 async def test_resume_ownership_is_enforced(client: AsyncClient, unique_email: str):
     owner_headers = await _signed_up_headers(client, unique_email)
     resume_text = _load_text("resumes", "03_sneha_iyer_fullstack_dev.txt")
@@ -115,6 +127,28 @@ async def test_resume_ownership_is_enforced(client: AsyncClient, unique_email: s
     other_headers = await _signed_up_headers(client, f"other-{unique_email}")
     resp = await client.get(f"/resumes/{resume_id}", headers=other_headers)
     assert resp.status_code == 404
+
+
+async def test_resume_upload_never_trusts_client_filename(client: AsyncClient, unique_email: str):
+    """A malicious/path-traversal filename must not affect where the file
+    ends up — the server always generates its own UUID-based name."""
+    headers = await _signed_up_headers(client, unique_email)
+    resume_text = _load_text("resumes", "05_ananya_das_devops_engineer.txt")
+
+    upload_resp = await client.post(
+        "/resumes/upload",
+        files={"file": ("../../../etc/evil.pdf", _text_to_pdf_bytes(resume_text), "application/pdf")},
+        headers=headers,
+    )
+    assert upload_resp.status_code == 201
+    resume_id = upload_resp.json()["id"]
+
+    # The response never exposes file_path at all...
+    assert "file_path" not in upload_resp.json()
+    # ...and the download endpoint still resolves to a real, safely-stored file.
+    file_resp = await client.get(f"/resumes/{resume_id}/file", headers=headers)
+    assert file_resp.status_code == 200
+    assert file_resp.headers["content-type"] == "application/pdf"
 
 
 async def test_patch_resume_updates_skills(client: AsyncClient, unique_email: str):
