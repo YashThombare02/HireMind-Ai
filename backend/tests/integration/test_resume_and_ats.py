@@ -92,6 +92,41 @@ async def test_ats_score_is_idempotent_unless_forced(client: AsyncClient, unique
     assert forced.json()["id"] != first.json()["id"]
 
 
+async def test_resume_upload_uses_llm_path_when_available(client: AsyncClient, unique_email: str, monkeypatch):
+    """Proves the LLM path is actually wired into the upload endpoint, not
+    just unit-tested in isolation — the test/dev environment has no Gemini
+    key, so without mocking this the endpoint always takes the regex
+    fallback and this wiring would go unverified.
+    """
+    from app.services.resume_parser import ParsedResume
+
+    llm_result = ParsedResume(
+        raw_text="irrelevant",
+        skills=["python", "llm-only-skill"],
+        education=[{"title": "LLM-Extracted University", "details": "B.Tech"}],
+        experience=[],
+        projects=[],
+        certifications=[],
+    )
+
+    async def fake_extract_resume_with_llm(cleaned_text: str):
+        return llm_result
+
+    monkeypatch.setattr("app.services.resume_service.extract_resume_with_llm", fake_extract_resume_with_llm)
+
+    headers = await _signed_up_headers(client, unique_email)
+    resume_text = _load_text("resumes", "01_priya_sharma_backend_dev.txt")
+    resp = await client.post(
+        "/resumes/upload",
+        files={"file": ("resume.pdf", _text_to_pdf_bytes(resume_text), "application/pdf")},
+        headers=headers,
+    )
+    assert resp.status_code == 201, resp.text
+    body = resp.json()
+    assert body["education"] == [{"title": "LLM-Extracted University", "details": "B.Tech"}]
+    assert "llm-only-skill" in body["skills"]
+
+
 async def test_resume_upload_rejects_non_pdf(client: AsyncClient, unique_email: str):
     headers = await _signed_up_headers(client, unique_email)
     resp = await client.post(

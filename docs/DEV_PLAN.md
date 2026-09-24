@@ -330,7 +330,7 @@ Exposed via a `useAuth()` hook.
 2. Real-PDF check: attempt `fitz.open()` on the bytes; failure → 400 `"File is not a valid PDF."`
 3. Save to `backend/uploads/resumes/{uuid}.pdf` (never the user-supplied filename — avoids path traversal; original filename, if kept at all, is stored as metadata only, never used to build a path).
 4. Extract text; if extracted length < 50 chars → 422 `"This looks like a scanned/image-only PDF — please upload a text-based PDF."` (no silent proceed-with-empty-data).
-5. Clean → section-split → spaCy + skill-dictionary extraction (as in `docs/ARCHITECTURE.md` Module 6) → store.
+5. Clean → **structure via LLM call** (`app/services/resume_ai_parser.py`), skill dictionary run in parallel and unioned in → store. **Revised from the original plan**: this was originally spec'd as pure regex/section-heading heuristics (spaCy + skill-dictionary). That broke badly the first time it hit a real resume using a different template than `sample_data/`'s own — arbitrary resume layouts are an open-ended problem regex can't converge on. LLM-based structuring is now the primary path (`app/services/llm_client.py`, introduced here rather than in Phase 3 as originally planned), with the original regex parser (`app/services/resume_parser.py`) kept as the fallback when no key is configured yet or the LLM call fails — see `docs/ARCHITECTURE.md` Module 6.
 6. Soft cap: `MAX_RESUMES_PER_USER` (e.g. 20) — 429/400 past that, prevents storage abuse without needing real infra.
 7. Response includes the structured parse **and** the candidate can `PATCH` any field afterward — this is the trust-building "let them fix what parsing got wrong" step flagged as important back when Module 6 was designed.
 
@@ -348,8 +348,8 @@ Exposed via a `useAuth()` hook.
 - ATS results: score with matched (green) / missing (red) skill chips, loading skeleton, retry on failure.
 
 **Tests:**
-- Unit: skill/section extraction against `sample_data/ground_truth.json` (assert extracted skills match expected sets within a reasonable tolerance); ATS formula including the zero-required-skills edge case; path-traversal-safe filename generation.
-- Integration: upload a real PDF (convert one `sample_data/resumes/*.txt` to PDF for this, per `sample_data/README.md`), full parse → JD → ATS flow against `sample_data`, ownership 404 case, idempotent re-score returns the same result without a second embedding compute (assert via a call count on the embedding function).
+- Unit: skill/section extraction against `sample_data/ground_truth.json` (assert extracted skills match expected sets within a reasonable tolerance); ATS formula including the zero-required-skills edge case; path-traversal-safe filename generation; LLM extraction (`resume_ai_parser.py`) with `generate_json` mocked, covering the happy path, the no-key/`LLMUnavailableError` path, and a malformed-schema path.
+- Integration: upload a real PDF (convert one `sample_data/resumes/*.txt` to PDF for this, per `sample_data/README.md`), full parse → JD → ATS flow against `sample_data`, ownership 404 case, idempotent re-score returns the same result without a second embedding compute (assert via a call count on the embedding function), and one test with `extract_resume_with_llm` mocked end-to-end through the actual upload endpoint to prove the LLM path is really wired in (the dev/test env has no Gemini key, so every *unmocked* test exercises the regex fallback — both paths need explicit coverage).
 
 **Done when:** every sample resume/JD pair from `sample_data/` produces a plausible score, matched/missing skills roughly matching `ground_truth.json`, and the scanned-PDF and oversized-file error paths both trigger correctly with clear messages.
 
@@ -359,10 +359,10 @@ Exposed via a `useAuth()` hook.
 
 **Endpoints:** `POST /assessments/generate`, `POST /assessments/{test_id}/submit`.
 
-**LLM client hardening (`app/services/llm_client.py`), used by every phase from here on:**
-- One `generate(prompt) -> str` function; behind it, the mock client (reading canned responses keyed to `sample_data`) until the Gemini key is added — swapping providers is a one-file change, as already planned.
-- Timeout (30s) on the real call once wired in; on timeout or provider error, one retry with backoff, then a clean 502 `{"detail": "Assessment generation is temporarily unavailable — please try again."}` rather than a raw exception reaching the client.
-- LLM output validated against a Pydantic schema (5 MCQs with 4 options + 1 correct index + skill_tag; 1 coding question with 2-3 test cases + skill_tag). Malformed JSON → one retry with a stricter "return only valid JSON matching this schema" instruction → if it still fails, 502 with a clear message (never silently store a malformed test).
+**`app/services/llm_client.py` — built in Phase 2, reused here unchanged:**
+- `generate_json(prompt, max_retries=1) -> dict`: calls Gemini asking for a JSON response, retries once with a stricter instruction on malformed output, then raises `LLMUnavailableError` (no key configured, or still-malformed after the retry) — timeout-bounded (`settings.llm_timeout_seconds`, 30s default).
+- Every caller catches `LLMUnavailableError` and has its own fallback: Phase 2's resume parsing falls back to the regex parser; assessment generation here has no equivalent free fallback, so it instead surfaces a clean 502 `{"detail": "Assessment generation is temporarily unavailable — please try again."}` rather than a raw exception reaching the client.
+- LLM output validated against a Pydantic schema (5 MCQs with 4 options + 1 correct index + skill_tag; 1 coding question with 2-3 test cases + skill_tag) — same "validate, retry once, then fail cleanly" shape as `resume_ai_parser.py` uses.
 
 **Generation/submission logic:**
 - One active (ungenerated-for again) test per resume+JD pair unless `regenerate=true` explicitly requested — same idempotency pattern as ATS.
@@ -445,9 +445,9 @@ Exposed via a `useAuth()` hook.
 
 ---
 
-## Sequencing (unchanged from the existing plan, still holds)
+## Sequencing (updated: `llm_client.py` now lands in Phase 2, not Phase 3)
 
-Phases 2 and 3 can run in parallel once Phase 1 lands (Vaibhav and Aayush don't block each other). Phase 4 depends on Phase 3's skill-tagging convention (same owner, so it stays consistent). Phase 5 depends on Phases 2-4 all producing tagged, storable scores — don't start it early. The mock LLM client (introduced in Phase 3, used through Phase 6) is what makes "no Gemini key yet" a non-blocker for every phase above Phase 2.
+Phases 2 and 3 can run in parallel once Phase 1 lands (Vaibhav and Aayush don't block each other). Phase 4 depends on Phase 3's skill-tagging convention (same owner, so it stays consistent). Phase 5 depends on Phases 2-4 all producing tagged, storable scores — don't start it early. `app/services/llm_client.py` (`generate_json` + `LLMUnavailableError`) was built in Phase 2 for resume parsing, earlier than originally planned — Phase 3 onward reuse it unchanged. Every LLM-calling feature has its own fallback for "no key configured yet" (Phase 2: the regex parser; Phase 3+: a clean 502 rather than a raw exception), which is what makes "no Gemini key yet" a non-blocker for every phase.
 
 ## Verification
 

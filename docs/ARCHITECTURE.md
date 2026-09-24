@@ -205,18 +205,19 @@ All tables live in one SQLAlchemy `models.py` (split into multiple files only if
 **Steps:**
 1. Validate: file is a PDF, size ≤ 5MB. Reject otherwise with a clear 400 error.
 2. Save the file to disk (or a blob path) and record `file_path`.
-3. Extract raw text using PyMuPDF (`fitz.open(path)`, iterate pages, `page.get_text()`).
-4. Clean text: collapse repeated whitespace, strip control characters, normalize bullet characters.
-5. Section splitting: rule-based — search for common heading keywords ("education", "experience", "projects", "certifications", "skills") case-insensitively, split the text into chunks between headings. This is simple and reliable enough for resume formats; no ML model needed for this step.
-6. Skill extraction: run spaCy over the full text, plus a curated dictionary/list of known tech skills (languages, frameworks, tools) — match against this list rather than relying on generic named-entity recognition, which doesn't reliably catch tech terms like "Redux" or "Kubernetes".
-7. Populate `education`, `experience`, `projects`, `certifications` as structured JSON from the section-split text (simple regex/heuristics per section: e.g. experience entries often follow a "Role — Company — Dates" pattern).
-8. Store everything in the `resumes` table.
+3. Extract raw text using PyMuPDF (`page.get_text(sort=True)` — position-sorted, which meaningfully helps multi-column layouts).
+4. Clean text: collapse repeated whitespace, blank-line runs, and control characters.
+5. **Structure the text into skills/education/experience/projects/certifications via an LLM call** (`app/services/resume_ai_parser.py`), not regex — see "Why LLM, not regex" below. A curated skill dictionary (`app/services/skills_dictionary.py`) also runs independently and is unioned with the LLM's skill list, since it's free, instant, and reliable for known skill names regardless of how the LLM phrases things.
+6. **Fallback:** if no LLM is configured yet (`GEMINI_API_KEY` unset) or the LLM call fails/returns unusable JSON after one retry, fall back to `app/services/resume_parser.py`'s regex/keyword-heuristic parser — resume upload never hard-fails just because the LLM step didn't work.
+7. Store everything in the `resumes` table.
+
+**Why LLM, not regex (revised from the original design):** the first version of this module was pure regex/keyword heuristics, tested only against this project's own synthetic sample resumes. It broke badly on a real resume using a different (common) template — unrecognized section headings, institution/degree/dates split across lines in a way the parser didn't expect, multi-line certification entries. The fundamental problem isn't a missing pattern to add — arbitrary resume layouts are an open-ended text-understanding problem that a fixed set of rules can't converge on, no matter how many edge cases get patched in. That's exactly the class of problem an LLM generalizes across far better than hand-written rules, so it's the primary path now, with the regex parser kept as a free, always-available fallback (and as what actually runs during local dev before the Gemini key is added).
 
 **Output returned to frontend:** the parsed structured resume (skills list, education, experience, etc.) so the candidate can see what was extracted and optionally correct it before proceeding (small but important trust-building UX step — if parsing gets something wrong, the candidate should be able to see it immediately).
 
 **Edge cases to handle:**
 - Scanned/image-only PDFs (no extractable text) — detect this (near-empty extracted text) and show a clear error asking for a text-based PDF, rather than silently proceeding with empty data.
-- Resumes with tables/multi-column layouts — PyMuPDF's default text extraction may scramble column order; acceptable to note as a known limitation rather than solve fully (out of scope: a full layout-aware parser).
+- LLM unavailable or returns malformed JSON — one retry with a stricter prompt, then fall back to the regex parser (see above) rather than failing the request.
 
 ---
 
@@ -399,13 +400,17 @@ backend/
       verification.py
       dashboard.py
     services/
-      resume_parser.py
+      resume_parser.py       (regex/keyword fallback parser)
+      resume_ai_parser.py    (LLM-based parser — primary path)
+      resume_service.py      (upload orchestration: LLM → fallback → persist)
+      llm_client.py           (shared Gemini wrapper: generate_json, LLMUnavailableError)
       jd_analyzer.py
       matcher.py
       assessment_engine.py
       interview_engine.py
       verification_engine.py
     prompts/
+      resume_extraction_prompts.py
       assessment_prompts.py
       interview_prompts.py
       evaluation_prompts.py

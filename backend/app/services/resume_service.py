@@ -3,6 +3,7 @@ storage, embedding, ownership caps. Kept separate from resume_parser.py so
 the parsing logic stays unit-testable without a database.
 """
 
+import logging
 import os
 import uuid
 
@@ -13,7 +14,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.config import settings
 from app.db.models import Resume
 from app.services.embeddings import embed
-from app.services.resume_parser import InvalidPdfError, ScannedPdfError, parse_resume_pdf
+from app.services.llm_client import LLMUnavailableError
+from app.services.resume_ai_parser import extract_resume_with_llm
+from app.services.resume_parser import (
+    MIN_EXTRACTED_TEXT_LENGTH,
+    InvalidPdfError,
+    ParsedResume,
+    clean_text,
+    extract_text_from_pdf,
+    parse_resume_text,
+)
+
+logger = logging.getLogger("hireminds.resume_service")
 
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads", "resumes")
 
@@ -41,11 +53,27 @@ async def save_uploaded_resume(session: AsyncSession, user_id: uuid.UUID, file: 
     await _enforce_resume_cap(session, user_id)
 
     try:
-        parsed = parse_resume_pdf(content)
+        raw_text = extract_text_from_pdf(content)
     except InvalidPdfError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
-    except ScannedPdfError as exc:
-        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    if len(raw_text.strip()) < MIN_EXTRACTED_TEXT_LENGTH:
+        raise HTTPException(
+            status_code=422,
+            detail="This looks like a scanned/image-only PDF — please upload a text-based PDF.",
+        )
+    cleaned_text = clean_text(raw_text)
+
+    parsed: ParsedResume
+    try:
+        parsed = await extract_resume_with_llm(cleaned_text)
+        logger.info("resume_parsed", extra={"user_id": str(user_id), "method": "llm"})
+    except LLMUnavailableError as exc:
+        # No API key configured yet, or the LLM never returned usable JSON —
+        # fall back to the regex parser rather than failing the upload.
+        logger.info(
+            "resume_parsed", extra={"user_id": str(user_id), "method": "regex_fallback", "reason": str(exc)}
+        )
+        parsed = parse_resume_text(cleaned_text)
 
     # Never trust the client-supplied filename for the on-disk path — avoids
     # path traversal and filename collisions.
