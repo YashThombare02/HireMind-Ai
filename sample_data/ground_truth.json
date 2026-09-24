@@ -4,13 +4,13 @@
   "resumes": {
     "01_priya_sharma_backend_dev": {
       "best_matching_jd": "01_backend_developer_python",
-      "expected_skills": ["python", "fastapi", "django", "postgresql", "sql", "docker", "git", "rest apis", "redis", "linux", "pytest"],
+      "expected_skills": ["python", "fastapi", "django", "postgresql", "sql", "docker", "git", "rest api", "redis", "linux", "pytest"],
       "inflated_skills": [],
       "label": "genuine"
     },
     "02_arjun_mehta_frontend_dev": {
       "best_matching_jd": "02_frontend_developer_react",
-      "expected_skills": ["javascript", "typescript", "react", "redux", "tailwind css", "html", "css", "next.js", "jest", "figma", "rest apis"],
+      "expected_skills": ["javascript", "typescript", "react", "redux", "tailwind css", "html", "css", "next.js", "jest", "figma", "rest api"],
       "inflated_skills": [],
       "label": "genuine"
     },
@@ -43,11 +43,11 @@
 
   "job_descriptions": {
     "01_backend_developer_python": {
-      "required_skills": ["python", "fastapi", "django", "sql", "postgresql", "rest api design", "git"],
+      "required_skills": ["python", "fastapi", "django", "sql", "postgresql", "rest api", "git"],
       "preferred_skills": ["docker", "redis", "pytest", "ci/cd"]
     },
     "02_frontend_developer_react": {
-      "required_skills": ["javascript", "react", "html", "css", "rest api integration"],
+      "required_skills": ["javascript", "react", "html", "css", "rest api"],
       "preferred_skills": ["typescript", "redux", "tailwind css", "jest", "figma"]
     },
     "03_fullstack_developer": {

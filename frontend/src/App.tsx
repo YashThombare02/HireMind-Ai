@@ -1,37 +1,39 @@
-import { useEffect, useState } from "react";
-import { apiGet } from "./lib/api";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import AtsResultsPage from "./app/ats-results/AtsResultsPage";
+import DashboardPage from "./app/dashboard/DashboardPage";
+import JobDescriptionPage from "./app/job-description/JobDescriptionPage";
+import LoginPage from "./app/login/LoginPage";
+import ResumeUploadPage from "./app/resume-upload/ResumeUploadPage";
+import SignupPage from "./app/signup/SignupPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./lib/AuthContext";
 
-type HealthResponse = { status: string };
-
-export default function App() {
-  const [backendStatus, setBackendStatus] = useState<"checking" | "connected" | "unreachable">(
-    "checking",
-  );
-
-  useEffect(() => {
-    apiGet<HealthResponse>("/health")
-      .then((data) => setBackendStatus(data.status === "ok" ? "connected" : "unreachable"))
-      .catch(() => setBackendStatus("unreachable"));
-  }, []);
-
+function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
       <h1 className="text-2xl font-semibold text-slate-800">HireMinds AI</h1>
-      <p className="text-slate-600">
-        Backend status:{" "}
-        <span
-          className={
-            backendStatus === "connected"
-              ? "text-green-600 font-medium"
-              : backendStatus === "unreachable"
-                ? "text-red-600 font-medium"
-                : "text-slate-500"
-          }
-        >
-          {backendStatus}
-        </span>
-      </p>
-      <p className="text-sm text-slate-400">Phase 0 scaffold — pages are added in later phases.</p>
+      <p className="text-slate-600">AI-powered resume, assessment, and interview pipeline.</p>
+      <Navigate to="/login" replace />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/resume-upload" element={<ResumeUploadPage />} />
+            <Route path="/job-description" element={<JobDescriptionPage />} />
+            <Route path="/ats-results" element={<AtsResultsPage />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

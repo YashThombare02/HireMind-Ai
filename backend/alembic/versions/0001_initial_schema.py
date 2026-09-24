@@ -10,7 +10,7 @@ Once the backend container is running, `alembic revision --autogenerate`
 can be used to verify this matches app/db/models.py exactly before any
 future schema change.
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
 import sqlalchemy as sa
 from alembic import op
@@ -18,9 +18,9 @@ from pgvector.sqlalchemy import Vector
 from sqlalchemy.dialects import postgresql
 
 revision: str = "0001"
-down_revision: Union[str, None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 EMBEDDING_DIM = 384
 
