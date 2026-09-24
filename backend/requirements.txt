@@ -1,0 +1,25 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pydantic-settings==2.6.1
+
+# Database
+sqlalchemy==2.0.36
+alembic==1.14.0
+psycopg[binary]==3.2.3
+pgvector==0.3.6
+
+# Auth
+fastapi-users[sqlalchemy]==14.0.1
+
+# Resume/JD processing
+pymupdf==1.24.14
+spacy==3.8.2
+sentence-transformers==3.3.1
+
+# LLM (added when the API key is wired in — safe to have installed now)
+google-generativeai==0.8.3
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+httpx==0.28.1

@@ -1,0 +1,31 @@
+Job Title: Frontend Developer (React)
+Company: Lumen Interface Co.
+Location: Bengaluru, India (Remote-friendly)
+Experience Required: 0-2 years
+
+About the role:
+Join our product team to build fast, accessible, and beautiful user interfaces
+for our SaaS platform used by thousands of businesses.
+
+Required Skills:
+- JavaScript
+- React
+- HTML
+- CSS
+- REST API integration
+
+Preferred Skills:
+- TypeScript
+- Redux or similar state management
+- Tailwind CSS
+- Jest / React Testing Library
+- Figma familiarity
+
+Responsibilities:
+- Build responsive, reusable UI components
+- Integrate frontend with backend REST APIs
+- Write component-level tests
+- Work closely with designers to implement pixel-accurate UIs
+- Optimize frontend performance
+
+Education: B.Tech/B.E. in Computer Science, IT, or a related field

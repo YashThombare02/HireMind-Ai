@@ -1,0 +1,29 @@
+Job Title: DevOps Engineer (Junior)
+Company: Skyline Cloud Systems
+Location: Chennai, India (Hybrid)
+Experience Required: 0-2 years
+
+About the role:
+We're looking for a DevOps engineer to help us build reliable, automated
+infrastructure and deployment pipelines.
+
+Required Skills:
+- Docker
+- Linux
+- CI/CD (GitHub Actions, GitLab CI, or similar)
+- Bash or Python scripting
+
+Preferred Skills:
+- Kubernetes
+- Terraform
+- AWS
+- Monitoring tools (Prometheus, Grafana)
+
+Responsibilities:
+- Build and maintain CI/CD pipelines
+- Manage containerized deployments
+- Write infrastructure-as-code for cloud resources
+- Set up monitoring and alerting
+- Support engineers with deployment issues
+
+Education: B.Tech/B.E. in Computer Science, IT, or a related field

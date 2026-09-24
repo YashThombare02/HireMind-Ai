@@ -1,0 +1,32 @@
+Priya Sharma
+priya.sharma.dev@email.com | +91 98765 43210 | Pune, India
+LinkedIn: linkedin.com/in/priyasharmadev | GitHub: github.com/priyasharma
+
+EDUCATION
+B.Tech in Computer Engineering, Pune Institute of Technology — 2022-2026
+CGPA: 8.7/10
+
+SKILLS
+Python, FastAPI, Django, PostgreSQL, SQL, Docker, Git, REST APIs, Redis, Linux, Pytest
+
+EXPERIENCE
+Backend Developer Intern — CloudLedger Technologies — May 2025 to Aug 2025
+Built and maintained REST APIs for an internal billing system using FastAPI and PostgreSQL.
+Reduced average API response time by 30% by adding database indexes and query caching with Redis.
+Wrote unit and integration tests with Pytest, raising backend test coverage from 40% to 75%.
+
+Software Engineering Intern — DevNest Labs — Dec 2024 to Feb 2025
+Worked on a Django-based inventory management tool used by 3 internal teams.
+Fixed 20+ bugs and implemented a CSV bulk-import feature.
+
+PROJECTS
+Campus Event Manager (2025)
+Full backend for a college event registration system, built with FastAPI, PostgreSQL, and JWT authentication.
+Deployed using Docker Compose; handled 500+ concurrent registrations during a real campus fest.
+
+URL Shortener Service (2024)
+A URL shortening API with rate limiting and analytics, built with Python and Redis.
+
+CERTIFICATIONS
+Python for Everybody Specialization — University of Michigan (Coursera)
+Docker Essentials — IBM SkillsBuild

@@ -1,0 +1,31 @@
+Rahul Verma
+rahul.verma.ds@email.com | +91 99887 76655 | Delhi, India
+GitHub: github.com/rahulverma | Kaggle: kaggle.com/rahulverma
+
+EDUCATION
+B.Tech in Computer Science (Data Science specialization), Delhi Technological University — 2022-2026
+CGPA: 8.9/10
+
+SKILLS
+Python, Pandas, NumPy, Scikit-learn, TensorFlow, SQL, spaCy, Sentence-Transformers, Matplotlib, Jupyter, Git
+
+EXPERIENCE
+Data Science Intern — Voyager Insights — May 2025 to Aug 2025
+Built a customer churn prediction model (XGBoost) with 84% F1-score, used in a production dashboard.
+Built an NLP pipeline using spaCy and Sentence-Transformers for semantic search over support tickets.
+Automated weekly reporting with Python scripts, saving the analytics team ~5 hours/week.
+
+Research Assistant — DTU NLP Lab — Jan 2025 to Apr 2025
+Assisted in a research project on resume-to-job semantic matching using sentence embeddings.
+Co-authored an internal technical report on embedding-based similarity scoring methods.
+
+PROJECTS
+Resume-JD Matcher (2025)
+A prototype system using Sentence-Transformers to compute semantic similarity between resumes and job descriptions, with an explainable weighted scoring formula.
+
+Sentiment Analysis on Product Reviews (2024)
+Built a sentiment classifier using Scikit-learn and TF-IDF, achieving 88% accuracy on a labeled review dataset.
+
+CERTIFICATIONS
+DeepLearning.AI TensorFlow Developer Professional Certificate
+Machine Learning Specialization — Stanford/Coursera

@@ -1,0 +1,30 @@
+Job Title: Backend Developer (Python)
+Company: NovaStack Technologies
+Location: Pune, India (Hybrid)
+Experience Required: 0-2 years
+
+About the role:
+We're looking for a Backend Developer to help build and scale our core API platform.
+You'll work closely with product and frontend teams to design clean, reliable APIs.
+
+Required Skills:
+- Python
+- FastAPI or Django
+- SQL / PostgreSQL
+- REST API design
+- Git
+
+Preferred Skills:
+- Docker
+- Redis
+- Unit testing experience (Pytest)
+- Basic understanding of CI/CD
+
+Responsibilities:
+- Design and implement REST APIs for core product features
+- Write and maintain automated tests
+- Optimize database queries for performance
+- Collaborate with frontend engineers on API contracts
+- Participate in code reviews
+
+Education: B.Tech/B.E. in Computer Science, IT, or a related field

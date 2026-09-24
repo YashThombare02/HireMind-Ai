@@ -1,0 +1,30 @@
+Job Title: Data Scientist (Entry Level)
+Company: Meridian Analytics
+Location: Delhi, India (Onsite)
+Experience Required: 0-2 years
+
+About the role:
+We're hiring a Data Scientist to help build predictive models and NLP-driven
+features for our analytics platform.
+
+Required Skills:
+- Python
+- Pandas / NumPy
+- Scikit-learn
+- SQL
+- Data visualization (Matplotlib or similar)
+
+Preferred Skills:
+- TensorFlow or PyTorch
+- spaCy or other NLP libraries
+- Sentence-Transformers / embeddings experience
+- Jupyter notebook workflows
+
+Responsibilities:
+- Build and evaluate predictive models
+- Design and run experiments to validate model performance
+- Build NLP pipelines for text-based product features
+- Communicate findings clearly to non-technical stakeholders
+- Maintain clean, reproducible research code
+
+Education: B.Tech/B.E. in Computer Science, Data Science, or a related field

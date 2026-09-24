@@ -1,0 +1,31 @@
+Ananya Das
+ananya.das.devops@email.com | +91 97654 32109 | Chennai, India
+GitHub: github.com/ananyadas | LinkedIn: linkedin.com/in/ananyadas
+
+EDUCATION
+B.E. in Computer Science, Anna University — 2022-2026
+CGPA: 8.4/10
+
+SKILLS
+Docker, Kubernetes, Terraform, AWS, Linux, Bash, Python, CI/CD, GitHub Actions, Prometheus, Grafana
+
+EXPERIENCE
+DevOps Intern — Skyline Cloud Systems — Jun 2025 to Sep 2025
+Set up CI/CD pipelines with GitHub Actions for 5 microservices, cutting deployment time from 40 to 8 minutes.
+Migrated a monolithic app to Kubernetes, defining Helm charts for staging and production.
+Set up Prometheus + Grafana monitoring, reducing incident detection time significantly.
+
+Cloud Infrastructure Intern — Northwind Systems — Dec 2024 to Feb 2025
+Wrote Terraform modules to provision AWS infrastructure (EC2, RDS, S3) reproducibly.
+Automated backup verification scripts in Python and Bash.
+
+PROJECTS
+Self-Healing Deployment Pipeline (2025)
+A GitHub Actions + Kubernetes pipeline that automatically rolls back failed deployments based on health checks.
+
+Infrastructure-as-Code Starter Kit (2024)
+A reusable Terraform + Docker Compose template for spinning up a full dev environment in one command.
+
+CERTIFICATIONS
+AWS Certified Cloud Practitioner
+Certified Kubernetes Application Developer (CKAD) — in progress

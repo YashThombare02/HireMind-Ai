@@ -1,0 +1,31 @@
+Sneha Iyer
+sneha.iyer.dev@email.com | +91 90000 11223 | Hyderabad, India
+GitHub: github.com/snehaiyer | LinkedIn: linkedin.com/in/snehaiyer
+
+EDUCATION
+B.Tech in Computer Science, IIIT Hyderabad — 2022-2026
+CGPA: 9.0/10
+
+SKILLS
+JavaScript, TypeScript, React, Node.js, Express, Python, FastAPI, PostgreSQL, MongoDB, Docker, Git, GraphQL
+
+EXPERIENCE
+Full Stack Developer Intern — Nimbus Cart — May 2025 to Aug 2025
+Built end-to-end features for an e-commerce platform: React frontend, Node.js/Express backend, PostgreSQL database.
+Implemented a GraphQL API layer for the product catalog, reducing over-fetching on mobile clients.
+Set up Docker-based local dev environment adopted by the entire 6-person engineering team.
+
+Software Developer Intern — Kestrel Analytics — Dec 2024 to Feb 2025
+Built a FastAPI microservice for report generation, consumed by a React dashboard.
+Wrote MongoDB aggregation pipelines for usage analytics.
+
+PROJECTS
+Collaborative Task Board (2025)
+Real-time task board (like Trello) built with React, Node.js, Socket.io, and MongoDB.
+
+Expense Tracker API (2024)
+A FastAPI + PostgreSQL backend with JWT auth and category-based analytics endpoints.
+
+CERTIFICATIONS
+Full Stack Open — University of Helsinki
+MongoDB Node.js Developer Path — MongoDB University

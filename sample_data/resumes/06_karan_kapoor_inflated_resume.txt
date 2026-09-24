@@ -1,0 +1,37 @@
+Karan Kapoor
+karan.kapoor.dev@email.com | +91 93456 78901 | Mumbai, India
+GitHub: github.com/karankapoor
+
+EDUCATION
+B.Tech in Information Technology, Mumbai University — 2022-2026
+CGPA: 7.6/10
+
+SKILLS
+Python, FastAPI, Kubernetes, Docker, GraphQL, Machine Learning, TensorFlow, Microservices Architecture, AWS, System Design, Redis, Kafka
+
+EXPERIENCE
+Backend Developer Intern — Quickly Apps — May 2025 to Jul 2025
+Worked on backend features for a mobile app using Python.
+Helped fix some bugs and attended team stand-ups.
+
+Web Developer Intern — Local Web Co. — Dec 2024 to Jan 2025
+Built a few pages for a small business website.
+
+PROJECTS
+To-Do List App (2024)
+A basic to-do list app with a Python backend and a simple frontend.
+
+Personal Portfolio Website (2024)
+A static personal portfolio site.
+
+CERTIFICATIONS
+Introduction to Python — online course (certificate of completion)
+
+NOTE FOR DEV/TEST USE ONLY:
+This resume is intentionally written to list several advanced/trendy skills in the
+SKILLS section (Kubernetes, GraphQL, Machine Learning, TensorFlow, Microservices
+Architecture, System Design, Kafka) that are NOT backed up by the actual experience
+or project descriptions below them, which are deliberately generic and junior-level.
+This is a test fixture for the skill-verification (trust-score) feature — the goal
+is for the pipeline to flag these specific skills as "claimed_but_unverified" after
+a low-scoring test/interview performance on them. See sample_data/ground_truth.json.

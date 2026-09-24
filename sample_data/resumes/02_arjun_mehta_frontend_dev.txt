@@ -1,0 +1,31 @@
+Arjun Mehta
+arjun.mehta.frontend@email.com | +91 91234 56789 | Bengaluru, India
+GitHub: github.com/arjunmehta | Portfolio: arjunmehta.dev
+
+EDUCATION
+B.E. in Information Technology, R.V. College of Engineering — 2022-2026
+CGPA: 8.2/10
+
+SKILLS
+JavaScript, TypeScript, React, Redux, Tailwind CSS, HTML, CSS, Next.js, Jest, Figma, REST APIs
+
+EXPERIENCE
+Frontend Developer Intern — Pixel Forge Studio — Jun 2025 to Sep 2025
+Built responsive dashboard components in React and TypeScript used across 4 client products.
+Migrated a legacy jQuery admin panel to React + Redux, cutting page load time by 45%.
+Wrote component tests with Jest and React Testing Library.
+
+Web Development Intern — Bright Byte Solutions — Jan 2025 to Mar 2025
+Implemented pixel-accurate UI from Figma designs using Tailwind CSS.
+Collaborated with backend team to integrate REST APIs into a React frontend.
+
+PROJECTS
+Recipe Sharing App (2025)
+A full React + Next.js app with Redux state management and a public recipe API integration.
+
+Portfolio Analytics Dashboard (2024)
+A data visualization dashboard built with React and Chart.js, showing stock portfolio performance.
+
+CERTIFICATIONS
+Meta Front-End Developer Professional Certificate (Coursera)
+JavaScript Algorithms and Data Structures — freeCodeCamp
